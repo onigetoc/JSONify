@@ -1,10 +1,10 @@
-(function($) {
-    $.fn.jsonify = function(options) {
+(function ($) {
+    $.fn.jsonify = function (options) {
         var settings = $.extend({
-            stringify : false
+            stringify: false
         }, options);
         var json = {};
-        $.each(this.serializeArray(), function() {
+        $.each(this.serializeArray(), function () {
             if (json[this.name]) {
                 if (!json[this.name].push)
                     json[this.name] = [json[this.name]];
@@ -12,30 +12,25 @@
             } else
                 json[this.name] = this.value || '';
         });
-        if(settings.stringify)
+        if (settings.stringify)
             return JSON.stringify(json);
         else
             return json;
     };
 
-    $.fn.dejsonify = function(data) {
+    $.fn.dejsonify = function (data) {
         if (typeof data === 'string')
             data = JSON.parse(data);
 
-        $.each(this.find('*[name]'), function() {
-            var inputType = $(this).attr('type'),
-                dataValue = data[$(this).attr('name')];
+        $.each(this.find('*[name]'), function () {
+            $this = $(this);
 
-            if (inputType === 'radio' ||
-                inputType === 'checkbox')
-            {
-                if ($.isArray(dataValue))
-                    $(this).prop('checked', $.inArray($(this).val(), dataValue) > -1);
-                else
-                    $(this).prop('checked', ($(this).val() === dataValue));
+            if ($this.is("input:radio")) {
+                if ($this.val() === data[$this.attr('name')])
+                    $this.click();
+            } else {
+                $this.val(data[$this.attr('name')]);
             }
-            else
-                $(this).val(dataValue);
         });
     };
 })(jQuery);
